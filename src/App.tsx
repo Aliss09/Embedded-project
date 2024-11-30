@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "./logo.svg";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
+import GetData from "./GetData";
+import { ref, set } from "firebase/database";
+import { database } from "./firebaseConfig";
 
 import "./App.css";
 const marks = [
@@ -32,10 +35,33 @@ function App() {
   const [OutdoorLight, setOutdoorLight] = useState<boolean>(false);
   const [IndoorLight, setIndoorLight] = useState<boolean>(false);
   const [TestEnvironment, setTestEnvironment] = useState<string>("Normal");
-  // outdoor light bulb
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setValueAir(newValue as number);
+  const { humidity, temperature, indoorLed, outdoorLed, isSmoke } = GetData();
+
+  // ฟังก์ชันสำหรับการเขียนข้อมูลไปยัง Firebase
+  // function writeDataToFirebase(humidity: number, temperature: number) {
+  //   // ระบุ path ในฐานข้อมูลที่จะเขียนข้อมูลไป
+  //   const humidityRef = ref(database, "humidity");
+  //   const temperatureRef = ref(database, "temperature");
+
+  //   // ใช้ set() เพื่อเขียนข้อมูลใหม่ไปยัง path นั้น
+  //   set(humidityRef, {
+  //     humidity: humidity,
+  //   });
+  // }
+  const writeDataToFirebase = async (
+    event: Event,
+    newValue: number | number[]
+  ) => {
+    // const humidityRef = ref(database, "humidity");
+    const temperatureRef = ref(database, "airTemp");
+    await set(temperatureRef, newValue);
   };
+
+  // outdoor light bulb
+  // const handleChange = async (event: Event, newValue: number | number[]) => {
+  //   setValueAir(newValue as number); // อัปเดตค่าใน state
+  //   await writeDataToFirebase(); // เขียนข้อมูลใหม่ไปยัง Firebase
+  // };
   function valuetext(value: number) {
     return `${value}°C`;
   }
@@ -54,11 +80,11 @@ function App() {
         <div className="flex flex-row items-center mt-auto ">
           <img className=" w-4/12 h-auto" src="/sk-1514-00.png"></img>
           <div className="felx flex-col">
-            <h1 className="text-1xl font-bold text-white">
-              Current Temperature : {tem}
+            <h1 className="text-1xl font-bold text-white ">
+              Current Temperature : {temperature}°C
             </h1>
             <h1 className="text-1xl font-bold text-white">
-              Current Moisture : {moisture}
+              Current Moisture : {humidity} %
             </h1>
           </div>
         </div>
@@ -86,10 +112,9 @@ function App() {
               <Slider
                 className="-mt-3"
                 aria-label="Custom marks"
-                defaultValue={20}
+                defaultValue={25}
                 getAriaValueText={valuetext}
-                value={valueAir}
-                onChange={handleChange}
+                onChange={writeDataToFirebase}
                 valueLabelDisplay="auto"
                 marks={marks}
                 sx={{
@@ -113,14 +138,12 @@ function App() {
           <img className=" w-4/12 h-auto" src="/Light.png"></img>
           <div className="felx flex-col">
             <h1 className="text-1xl font-bold text-white">
-              {OutdoorLight
+              {outdoorLed
                 ? "Outdoor light bulb : on"
                 : "Outdoor light bulb : off"}
             </h1>
             <h1 className="text-1xl font-bold text-white">
-              {IndoorLight
-                ? "Indoor light bulb : on"
-                : "Indoor light bulb : off"}
+              {indoorLed ? "Indoor light bulb : on" : "Indoor light bulb : off"}
             </h1>
           </div>
         </div>
@@ -131,7 +154,7 @@ function App() {
               Home Environment
             </h1>
             <h1 className="text-1xl font-bold text-white">
-              Current Environment : {TestEnvironment}
+              Current Environment : {isSmoke ? "Danger" : "Normal"}
             </h1>
           </div>
         </div>
