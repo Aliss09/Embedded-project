@@ -6,6 +6,7 @@ import Slider from "@mui/material/Slider";
 import GetData from "./GetData";
 import { ref, set } from "firebase/database";
 import { database } from "./firebaseConfig";
+import Snackbar from "@mui/material/Snackbar";
 
 import "./App.css";
 const marks = [
@@ -35,7 +36,53 @@ function App() {
   const [OutdoorLight, setOutdoorLight] = useState<boolean>(false);
   const [IndoorLight, setIndoorLight] = useState<boolean>(false);
   const [TestEnvironment, setTestEnvironment] = useState<string>("Normal");
-  const { humidity, temperature, indoorLed, outdoorLed, isSmoke } = GetData();
+  const {
+    humidity,
+    temperature,
+    indoorLed,
+    outdoorLed,
+    isSmoke,
+    isAir,
+    airTemp,
+  } = GetData();
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  useEffect(() => {
+    setOpenAir(isAir);
+    console.log(isAir);
+  }, [isAir]);
+
+  useEffect(() => {
+    setValueAir(airTemp);
+    console.log(isAir);
+  }, [airTemp]);
+
+  useEffect(() => {
+    setSnackbarMessage(`Temperature changed: ${temperature}°C`);
+    setSnackbarOpen(true); // Open the Snackbar when temperature changes
+  }, [temperature]);
+
+  useEffect(() => {
+    // Fetch data from the Google Apps Script URL
+    fetch(
+      "https://script.google.com/macros/s/AKfycbxRXLzij7I_XLes4A4TS2Cl0AECTi0CVHFtcg20ndLwPpaSWvLhmeAhrvbPeg94XwMt/exec"
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        // setData(data); // Set the data
+        // setLoading(false); // Stop loading
+      })
+      .catch((error) => {
+        // setError(error); // Handle error
+        // setLoading(false); // Stop loading
+      });
+  }, []);
 
   // ฟังก์ชันสำหรับการเขียนข้อมูลไปยัง Firebase
   // function writeDataToFirebase(humidity: number, temperature: number) {
@@ -57,6 +104,14 @@ function App() {
     await set(temperatureRef, newValue);
   };
 
+  const writeDataToFirebaseAir = async () => {
+    // const humidityRef = ref(database, "humidity");
+    const newAir = !openAir;
+    setOpenAir(newAir);
+    const temperatureAirRef = ref(database, "isAir");
+    await set(temperatureAirRef, newAir);
+  };
+
   // outdoor light bulb
   // const handleChange = async (event: Event, newValue: number | number[]) => {
   //   setValueAir(newValue as number); // อัปเดตค่าใน state
@@ -65,6 +120,10 @@ function App() {
   function valuetext(value: number) {
     return `${value}°C`;
   }
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
   return (
     <div className="min-h-s creen bg-black flex flex-col items-center min-h-screen m-0 p-0">
       <div className="flex flex-row bg-black justify-center items-center min-w-full">
@@ -99,7 +158,7 @@ function App() {
               className="bg-slate-500 text-sm text-white rounded-xl m-3 pr-4 pl-4 pt-2 pb-2"
               type="button"
               onClick={() => {
-                setOpenAir(!openAir);
+                writeDataToFirebaseAir();
               }}
             >
               {openAir ? "Air Conditioner is On" : "Air Conditioner is Off"}
@@ -112,7 +171,7 @@ function App() {
               <Slider
                 className="-mt-3"
                 aria-label="Custom marks"
-                defaultValue={25}
+                defaultValue={valueAir}
                 getAriaValueText={valuetext}
                 onChange={writeDataToFirebase}
                 valueLabelDisplay="auto"
@@ -159,6 +218,19 @@ function App() {
           </div>
         </div>
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            backgroundColor: "#15085d", // Change background color
+            color: "#fff", // Change text color
+          },
+        }}
+      />
     </div>
   );
 }
