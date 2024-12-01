@@ -9,6 +9,7 @@ import { database } from "./firebaseConfig";
 import Snackbar from "@mui/material/Snackbar";
 
 import "./App.css";
+import AiAssistant from "./components/tss";
 const marks = [
   {
     value: 35,
@@ -62,7 +63,7 @@ function App() {
 
   useEffect(() => {
     setValueAir(airTemp);
-    console.log(isAir);
+    console.log(airTemp);
   }, [airTemp]);
 
   // useEffect(() => {
@@ -211,6 +212,7 @@ function App() {
               <Slider
                 className="-mt-3"
                 aria-label="Custom marks"
+                value={valueAir}
                 defaultValue={valueAir}
                 max={40}
                 min={15}
@@ -231,7 +233,7 @@ function App() {
           )}
         </div>
       </div>
-      <div className="flex flex-col rounded-3xl bg-slate-900 justify-center mt-7 mb-5 w-4/5">
+      <div className="flex flex-col rounded-3xl bg-slate-900 justify-center mt-7 mb-36 w-4/5">
         <h1 className=" mt-6 text-3xl text-center font-bold text-cyan-500">
           Light Control
         </h1>
@@ -260,6 +262,7 @@ function App() {
           </div>
         </div>
       </div>
+      <AiAssistant />
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}
