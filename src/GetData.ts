@@ -8,6 +8,8 @@ export default function GetData() {
   const [indoorLed, setIndoorLed] = useState<boolean>(false);
   const [outdoorLed, setOutdoorLed] = useState<boolean>(false);
   const [isSmoke, setIsSmoke] = useState<boolean>(false);
+  const [isAir, setisAir] = useState<boolean>(false);
+  const [airTemp, setAirTemp] = useState<number>(0);
 
   useEffect(() => {
     const humidityRef = ref(database, "humidity");
@@ -15,6 +17,8 @@ export default function GetData() {
     const indoorLedRef = ref(database, "indoorLed");
     const outdoorLedRef = ref(database, "outdoorLed");
     const isSmokeRef = ref(database, "isSmoke");
+    const isAirTempRef = ref(database, "isAir");
+    const airTempRef = ref(database, "airTemp");
 
     // Set up real-time listeners for both humidity and temperature
     const unsubscribeHumidity = onValue(humidityRef, (snapshot) => {
@@ -57,6 +61,22 @@ export default function GetData() {
       }
     });
 
+    const unsubscribeOpenAir = onValue(isAirTempRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setisAir(snapshot.val());
+      } else {
+        console.log("No temperature data available");
+      }
+    });
+
+    const unsubscribeAirTemp = onValue(airTempRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setAirTemp(snapshot.val());
+      } else {
+        console.log("No temperature data available");
+      }
+    });
+
     // Clean up listeners when the component unmounts
     return () => {
       unsubscribeHumidity();
@@ -64,6 +84,8 @@ export default function GetData() {
       unsubscribeOutdoorLed();
       unsubscribeindoorLed();
       unsubscribeIsSmoke();
+      unsubscribeOpenAir();
+      unsubscribeAirTemp();
     };
   }, []);
 
@@ -73,5 +95,7 @@ export default function GetData() {
     outdoorLed,
     indoorLed,
     isSmoke,
+    isAir,
+    airTemp,
   };
 }
