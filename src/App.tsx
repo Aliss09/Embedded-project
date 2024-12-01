@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import logo from "./logo.svg";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import GetData from "./GetData";
@@ -28,6 +28,12 @@ const marks = [
   },
 ];
 
+interface googleSheetData {
+  name: string;
+  //   setNavbarIsOpen: (newvalue: Boolean) => void;
+  timestamp: string;
+}
+
 function App() {
   const [tem, setTem] = useState<string>("nowTem");
   const [moisture, setMoisture] = useState<string>("Moisture");
@@ -36,6 +42,8 @@ function App() {
   const [OutdoorLight, setOutdoorLight] = useState<boolean>(false);
   const [IndoorLight, setIndoorLight] = useState<boolean>(false);
   const [TestEnvironment, setTestEnvironment] = useState<string>("Normal");
+  // const [SheetData, setSheetData] = useState<googleSheetData[]>([]);
+  // const [SheetDataLenght, setSheetDataLenght] = useState<number>(99999);
   const {
     humidity,
     temperature,
@@ -57,31 +65,63 @@ function App() {
     console.log(isAir);
   }, [airTemp]);
 
-  useEffect(() => {
-    setSnackbarMessage(`Temperature changed: ${temperature}°C`);
-    setSnackbarOpen(true); // Open the Snackbar when temperature changes
-  }, [temperature]);
+  // useEffect(() => {
+  //   setSnackbarMessage(`Temperature changed: ${temperature}°C`);
+  //   setSnackbarOpen(true); // Open the Snackbar when temperature changes
+  // }, [temperature]);
+
+  const sheetDataRef = useRef<googleSheetData[]>([]);
+  const SheetDataLenghtRef = useRef<number>(Infinity);
 
   useEffect(() => {
-    // Fetch data from the Google Apps Script URL
-    fetch(
-      "https://script.google.com/macros/s/AKfycbxRXLzij7I_XLes4A4TS2Cl0AECTi0CVHFtcg20ndLwPpaSWvLhmeAhrvbPeg94XwMt/exec"
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        // setData(data); // Set the data
-        // setLoading(false); // Stop loading
-      })
-      .catch((error) => {
-        // setError(error); // Handle error
-        // setLoading(false); // Stop loading
-      });
+    const fetchData = () => {
+      fetch(
+        "https://script.google.com/macros/s/AKfycbxRXLzij7I_XLes4A4TS2Cl0AECTi0CVHFtcg20ndLwPpaSWvLhmeAhrvbPeg94XwMt/exec"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("d", data.data);
+          sheetDataRef.current = data.data;
+
+          // const date = new Date(data.data.at(1).timestamp);
+          // console.log(date);
+        })
+        .then(() => {
+          console.log("6666666666");
+          if (SheetDataLenghtRef.current < sheetDataRef.current.length) {
+            const date = new Date(
+              sheetDataRef.current[SheetDataLenghtRef.current - 1].timestamp
+            );
+            const showDate = date.toLocaleString("en-US", {
+              hour: "numeric",
+              minute: "numeric",
+            });
+            const name =
+              sheetDataRef.current[SheetDataLenghtRef.current - 1].name;
+            setSnackbarMessage(`${name} come in: ${showDate}`);
+            setSnackbarOpen(true);
+            SheetDataLenghtRef.current = sheetDataRef.current.length;
+            // setSheetDataLenght(SheetData.length);
+            console.log("55555555555555");
+          } else {
+            console.log("7777777777777");
+            SheetDataLenghtRef.current = sheetDataRef.current.length;
+            console.log(
+              SheetDataLenghtRef.current,
+              sheetDataRef.current.length
+            );
+            // setSheetDataLenght(2);
+            // console.log(SheetDataLenght);
+          }
+        })
+        // .then(() => console.log(leanghtNow))
+        .catch((error) => console.error("Error fetching data:", error));
+    };
+
+    fetchData(); // Initial fetch
+    const interval = setInterval(fetchData, 5000); // Fetch every 5 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
   }, []);
 
   // ฟังก์ชันสำหรับการเขียนข้อมูลไปยัง Firebase
@@ -220,7 +260,7 @@ function App() {
       </div>
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
+        autoHideDuration={4000}
         onClose={handleSnackbarClose}
         message={snackbarMessage}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
