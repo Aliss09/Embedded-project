@@ -11,20 +11,20 @@ import Snackbar from "@mui/material/Snackbar";
 import "./App.css";
 const marks = [
   {
-    value: 0,
-    label: "0",
+    value: 35,
+    label: "35°C",
   },
   {
-    value: 20,
-    label: "20",
+    value: 15,
+    label: "15°C",
   },
   {
-    value: 37,
-    label: "37",
+    value: 40,
+    label: "40°C",
   },
   {
-    value: 100,
-    label: "100°C",
+    value: 25,
+    label: "25°C",
   },
 ];
 
@@ -212,6 +212,8 @@ function App() {
                 className="-mt-3"
                 aria-label="Custom marks"
                 defaultValue={valueAir}
+                max={40}
+                min={15}
                 getAriaValueText={valuetext}
                 onChange={writeDataToFirebase}
                 valueLabelDisplay="auto"
