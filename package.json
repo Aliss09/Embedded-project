@@ -5,29 +5,40 @@
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
+    "@google/generative-ai": "^0.21.0",
     "@mui/material": "^6.1.8",
     "@mui/styled-engine-sc": "^6.1.8",
     "@mui/system": "^6.1.8",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/dom-speech-recognition": "^0.0.4",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.119",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "crypto-browserify": "^3.12.1",
     "firebase": "^11.0.2",
+    "node-polyfill-webpack-plugin": "^4.0.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "playht": "^0.14.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.13",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "url": "^0.11.4",
+    "web-vitals": "^2.1.4",
+    "webpack": "^5.96.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "react-app-rewired start"
   },
   "eslintConfig": {
     "extends": [
@@ -49,7 +60,11 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "buffer": "^6.0.3",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15"
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "tailwindcss": "^3.4.15",
+    "util": "^0.12.5"
   }
 }

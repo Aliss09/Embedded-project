@@ -9,22 +9,23 @@ import { database } from "./firebaseConfig";
 import Snackbar from "@mui/material/Snackbar";
 
 import "./App.css";
+import AiAssistant from "./components/tss";
 const marks = [
   {
-    value: 0,
-    label: "0",
+    value: 35,
+    label: "35°C",
   },
   {
-    value: 20,
-    label: "20",
+    value: 15,
+    label: "15°C",
   },
   {
-    value: 37,
-    label: "37",
+    value: 40,
+    label: "40°C",
   },
   {
-    value: 100,
-    label: "100°C",
+    value: 25,
+    label: "25°C",
   },
 ];
 
@@ -62,7 +63,7 @@ function App() {
 
   useEffect(() => {
     setValueAir(airTemp);
-    console.log(isAir);
+    console.log(airTemp);
   }, [airTemp]);
 
   // useEffect(() => {
@@ -211,7 +212,10 @@ function App() {
               <Slider
                 className="-mt-3"
                 aria-label="Custom marks"
+                value={valueAir}
                 defaultValue={valueAir}
+                max={40}
+                min={15}
                 getAriaValueText={valuetext}
                 onChange={writeDataToFirebase}
                 valueLabelDisplay="auto"
@@ -229,7 +233,7 @@ function App() {
           )}
         </div>
       </div>
-      <div className="flex flex-col rounded-3xl bg-slate-900 justify-center mt-7 mb-5 w-4/5">
+      <div className="flex flex-col rounded-3xl bg-slate-900 justify-center mt-7 mb-36 w-4/5">
         <h1 className=" mt-6 text-3xl text-center font-bold text-cyan-500">
           Light Control
         </h1>
@@ -258,6 +262,7 @@ function App() {
           </div>
         </div>
       </div>
+      <AiAssistant />
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}
