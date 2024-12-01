@@ -90,14 +90,14 @@ function App() {
           console.log("6666666666");
           if (SheetDataLenghtRef.current < sheetDataRef.current.length) {
             const date = new Date(
-              sheetDataRef.current[SheetDataLenghtRef.current - 1].timestamp
+              sheetDataRef.current[sheetDataRef.current.length - 1].timestamp
             );
             const showDate = date.toLocaleString("en-US", {
               hour: "numeric",
               minute: "numeric",
             });
             const name =
-              sheetDataRef.current[SheetDataLenghtRef.current - 1].name;
+              sheetDataRef.current[sheetDataRef.current.length - 1].name;
             setSnackbarMessage(`${name} come in: ${showDate}`);
             setSnackbarOpen(true);
             SheetDataLenghtRef.current = sheetDataRef.current.length;
