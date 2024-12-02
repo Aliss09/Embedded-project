@@ -5,6 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { onValue, ref, set } from "firebase/database";
 import { database } from "../firebaseConfig";
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa"; // Import Font Awesome icons
+import env from "react-dotenv";
 
 let genAI: GoogleGenerativeAI | null = null;
 
@@ -45,8 +46,8 @@ const AiAssistant = () => {
   const id = open ? "simple-popper" : undefined;
 
   useEffect(() => {
-    const apiKey = "AIzaSyBIlcHKwyFFXolR6HKspjnakuFaiNWpFBI"; // Replace with your actual API key
-    initializeGeminiApi(apiKey).catch(console.error);
+    const apiKey = env.API_KEY;
+    initializeGeminiApi(apiKey as string).catch(console.error);
 
     const dbRef = ref(database);
     onValue(dbRef, (snapshot) => {
