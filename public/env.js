@@ -1,0 +1,4 @@
+window.env = {
+  "GEMINI_API_KEY": "AIzaSyDQJkDSFuzA0KwCVl8UXngB6EJVcJKy3ys",
+  "FIREBASE_API_KEY": "AIzaSyB-vryKWHuQhY48O8OmJS2IGG95yYM_edY"
+};
