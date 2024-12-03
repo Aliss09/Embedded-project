@@ -46,7 +46,7 @@ const AiAssistant = () => {
   const id = open ? "simple-popper" : undefined;
 
   useEffect(() => {
-    const apiKey = env.API_KEY;
+    const apiKey = env.GEMINI_API_KEY;
     initializeGeminiApi(apiKey as string).catch(console.error);
 
     const dbRef = ref(database);

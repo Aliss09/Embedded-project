@@ -40,8 +40,7 @@
     "start": "react-dotenv && react-scripts start",
     "build": "react-dotenv && react-scripts build",
     "test": "react-dotenv && react-scripts test",
-    "eject": "react-dotenv && react-scripts eject",
-    "dev": "react-dotenv && react-scripts start"
+    "eject": "react-dotenv && react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -72,7 +71,8 @@
   },
   "react-dotenv": {
     "whitelist": [
-      "API_KEY"
+      "GEMINI_API_KEY",
+      "FIREBASE_API_KEY"
     ]
   }
 }

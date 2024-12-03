@@ -1,9 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
+import env from "react-dotenv";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB-vryKWHuQhY48O8OmJS2IGG95yYM_edY",
+  apiKey: env.FIREBASE_API_KEY,
   authDomain: "embeded-c80cb.firebaseapp.com",
   databaseURL:
     "https://embeded-c80cb-default-rtdb.asia-southeast1.firebasedatabase.app/",
